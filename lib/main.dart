@@ -13,8 +13,12 @@ class MyApp extends StatelessWidget {
     // hapus wordPair karena telah dibuat kelas StatefulWidget
     // final wordPair = WordPair.random();
     return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.lightGreen,
+      ),
       title: 'Startup Name Generator',
       home: RandomWords(),
+      debugShowCheckedModeBanner: false,
       // title: 'Welcome to Flutter',
       // home: Scaffold(
       //   appBar: AppBar(
@@ -45,8 +49,9 @@ class RandomWords extends StatefulWidget {
 
 class _RandomWordsState extends State<RandomWords> {
   // membuat variable untuk membuat list wordPair Random
-  final suggestions = <WordPair>[];
+  final suggestions = <WordPair>[]; // list
   final biggerFont = const TextStyle(fontSize: 18.0);
+  final saved = <WordPair>{}; // set, anti duplikat
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +80,24 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget buildRow(WordPair pair) {
+    final alreadySaved = saved.contains(pair);
+
     return ListTile(
       title: Text(
         pair.asPascalCase,
         style: biggerFont,
       ),
+      trailing: Icon(alreadySaved ? Icons.favorite : Icons.favorite_border,
+          color: alreadySaved ? Colors.red : null),
+      onTap: () {
+        setState(() {
+          if (alreadySaved) {
+            saved.remove(pair);
+          } else {
+            saved.add(pair);
+          }
+        });
+      },
     );
   }
 }
